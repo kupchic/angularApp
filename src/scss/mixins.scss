@@ -1,0 +1,44 @@
+@mixin flexCenteredX-Y {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+@mixin bgOption($posX: center, $posY: center, $size: cover) {
+	background-repeat: no-repeat;
+	background-size: $size;
+	background-position: $posX $posY;
+}
+@mixin Circle($radius) {
+	width: $radius;
+	height: $radius;
+	border-radius: 50%;
+}
+@mixin scrollStyle($thumbColor, $trackColor, $scrollWidth: 0.5rem) {
+	&::-webkit-resizer {
+		width: $scrollWidth;
+		height: $scrollWidth;
+	}
+
+	&::-webkit-scrollbar {
+		width: $scrollWidth;
+	}
+
+	&::-webkit-scrollbar-button {
+		width: $scrollWidth;
+		height: 0;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		border-radius: $scrollWidth/2;
+		background: $thumbColor;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: $trackColor;
+	}
+
+	& {
+		scrollbar-color: $thumbColor $trackColor;
+		scrollbar-width: thin;
+	}
+}
