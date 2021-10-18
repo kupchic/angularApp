@@ -1,0 +1,20 @@
+@import "variables";
+@import "mixins";
+:host{
+  grid-area: header;
+  border-bottom: 1px solid #242424;
+  header{
+    height: 100%;
+    display: grid;
+    grid-template-columns: $header-aside-height-width 1fr;
+    column-gap: $header-aside-height-width;
+  }
+  .header__logo-link {
+    display: flex;
+    @include flexCenteredX-Y();
+
+    img{
+      width: 2.5rem;
+    }
+  }
+}

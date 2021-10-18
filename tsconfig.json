@@ -23,6 +23,15 @@
     "paths": {
       "@shared/*": [
         "app/shared/*"
+      ],
+      "@pages/*": [
+        "app/pages/*"
+      ],
+      "@entities/*": [
+        "app/entities/*"
+      ],
+      "@assets/*": [
+        "app/assets/*"
       ]
     }
   },

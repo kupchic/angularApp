@@ -1,15 +1,52 @@
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-  position: relative;
+
+@import "variables";
+
+:root {
+	font-size: 16px;
 }
 
-a,button,select,textarea{
-  cursor: pointer;
-  outline: transparent;
-  border: none;
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	position: relative;
 }
-textarea{
-  resize: none;
+
+a,
+button,
+select,
+textarea {
+	cursor: pointer;
+	outline: transparent;
+	border: none;
+}
+a{
+	text-decoration: none;
+	color: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+textarea {
+	resize: none;
+}
+
+body {
+	height: 100vh;
+	display: flex;
+	color: $mainFontWhite;
+	font-size: 1rem;
+	font-weight: normal;
+	line-height: 1.3;
+  background-color: $mainBlack;
+	font-family: 'Inter', sans-serif;
+	overflow-x: hidden;
+}
+.material-icons-round {
+	font-size: inherit;
+	line-height: inherit;
 }

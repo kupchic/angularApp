@@ -1,0 +1,15 @@
+@import "variables";
+
+:host {
+  flex-grow: 1;
+	display: grid;
+	grid-template-columns: $header-aside-height-width 1fr;
+  grid-template-rows: $header-aside-height-width 1fr ;
+  grid-template-areas: 'header header' 'aside main';
+
+  main{
+    padding: $header-aside-height-width;
+    grid-area: main;
+  }
+
+}

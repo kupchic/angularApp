@@ -1,0 +1,39 @@
+<div class="gallery-wrp">
+	<div class="gallery__titles">
+		<h2>{{ searchKeyword | storeTitle }}</h2>
+		<input #searchInput placeholder="Search" type="text"/>
+	</div>
+	<div class="gallery-grid-wrp">
+		<div *ngIf="cards.length else loader " class="gallery">
+			
+			<div *ngFor="let card of cards | paginate:{
+			itemsPerPage: perPage,
+			currentPage:page,
+			totalItems: total
+			}; let i = index"  class="gallery-item">
+				<div class="gallery-item__img-wrp"><img (click)="open(i)"  [src]="card.thumbnailUrl" loading="lazy"  alt="" class="gallery-item__img"/></div>
+				<div class="gallery-item__title-wrp">
+					<p class="gallery-item__title">{{i}} {{card.title}}</p>
+					<label class="like-item-btn">
+						<input class="like-item-btn__checkbox" type="checkbox" name="" id="">
+						<div class="toggle-icon" title="❤"></div>
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="gallery__pagination">
+		<pagination-controls
+				
+				previousLabel="Prev"
+				nextLabel="Next"
+				(pageChange)="onTableChange($event)">
+		</pagination-controls>
+	</div>
+</div>
+<ng-template #loader>
+	<div class="loader-wrp">
+		<mat-spinner></mat-spinner>
+	</div>
+</ng-template>
