@@ -1,9 +1,10 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {CardsService} from "@shared/services/cards-service.service";
 import {FlickerApi} from "@entities/flickerNameSpace.namespace";
-import {IAlbum, Lightbox} from "ngx-lightbox";
+import {Lightbox} from "ngx-lightbox";
 import {fromEvent, Subscription} from "rxjs";
 import {debounceTime} from "rxjs/operators";
+import {Bookmarks, BookmarksService} from "@shared/services/bookmarks.service";
 
 @Component({
 	selector: "app-store-page",
@@ -11,19 +12,29 @@ import {debounceTime} from "rxjs/operators";
 	styleUrls: ["./store-page.component.scss"],
 })
 export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
-	constructor(private cardService: CardsService, private _lightbox: Lightbox) {}
+	constructor(
+		private cardService: CardsService,
+		private bookmarksService: BookmarksService,
+		private _lightbox: Lightbox
+	) {}
 	perPage: number = 100;
 	page: number = 1;
 	pages: number = 0;
 	total: number = 0;
 	searchKeyword: string = "popular";
 	cards: FlickerApi.Card[] = [];
+	bookmarks: Bookmarks = {};
 	private _albums: any[] = [];
 	@ViewChild("searchInput", {static: false})
 	searchInput: ElementRef | undefined;
 	searchingSubscription!: Subscription;
+	bookmarksSubscription!: Subscription;
 
 	ngOnInit(): void {
+		this.bookmarksSubscription = this.bookmarksService.getBookmarks().subscribe((res) => {
+			this.bookmarks = res;
+		});
+
 		this.updateInfo();
 	}
 	ngAfterViewInit() {
@@ -32,6 +43,14 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 			this.searchingSubscription = searching.pipe(debounceTime(1200)).subscribe((res: any) => {
 				this.updateInfo({keyWord: res.target.value});
 			});
+		}
+	}
+
+	cardLike(card: FlickerApi.Card): void {
+		if (!this.bookmarks[card.id]) {
+			this.bookmarksService.addToBookmarks(card);
+		} else {
+			this.bookmarksService.removeBookmark(card);
 		}
 	}
 
@@ -66,6 +85,7 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
+		this.bookmarksSubscription.unsubscribe();
 		this.searchingSubscription.unsubscribe();
 	}
 }

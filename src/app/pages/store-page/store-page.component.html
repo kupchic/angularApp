@@ -13,9 +13,9 @@
 			}; let i = index"  class="gallery-item">
 				<div class="gallery-item__img-wrp"><img (click)="open(i)"  [src]="card.thumbnailUrl" loading="lazy"  alt="" class="gallery-item__img"/></div>
 				<div class="gallery-item__title-wrp">
-					<p class="gallery-item__title">{{i}} {{card.title}}</p>
+					<p class="gallery-item__title">{{card.title}}</p>
 					<label class="like-item-btn">
-						<input class="like-item-btn__checkbox" type="checkbox" name="" id="">
+						<input [checked]="bookmarks[card.id]" (input)="cardLike(card)" class="like-item-btn__checkbox" type="checkbox">
 						<div class="toggle-icon" title="❤"></div>
 					</label>
 				</div>
@@ -24,7 +24,7 @@
 	</div>
 	
 	<div class="gallery__pagination">
-		<pagination-controls
+		<pagination-controls *ngIf="pages"
 				
 				previousLabel="Prev"
 				nextLabel="Next"

@@ -2,134 +2,9 @@
 @import "mixins";
 
 :host {
-	$title-pagination-row-height: 3rem;
-	$space: 1rem;
-	$galleryHeight: calc(
-		100vh - 3 * #{$header-aside-height-width} - 2 * #{$title-pagination-row-height} - 2 * #{$space}
-	);
 
-	.gallery-wrp {
-		display: grid;
-		grid-template-rows: $title-pagination-row-height $galleryHeight $title-pagination-row-height;
-		gap: $space;
-	}
 
-	.gallery-grid-wrp {
-		max-height: $galleryHeight;
-		overflow-y: auto;
-		@include scrollStyle(#e0e0e0, $mainBlack);
-		padding-right: 0.5rem;
-	}
 
-	.gallery {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 1.5rem;
-
-		&__titles {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-	}
-
-	.gallery-item {
-		padding: 1rem;
-		background-color: #1b1f217f;
-		transition-duration: 0.4s;
-		border-radius: 4%;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-
-		&:hover {
-			background-color: $secondaryBlack;
-		}
-
-		&__img {
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-			object-position: center top;
-			border-radius: 4%;
-
-			&-wrp {
-				padding-top: 66.66%;
-				margin-bottom: 1rem;
-			}
-		}
-
-		&__title {
-			display: -webkit-box;
-			-webkit-line-clamp: 2;
-			-webkit-box-orient: vertical;
-			overflow: hidden;
-			font-size: clamp(12px, 1vw, 1.25rem);
-
-			&-wrp {
-				display: grid;
-				grid-template-columns: 1fr $icon-size;
-				gap: 0.5rem;
-				align-items: flex-end;
-			}
-		}
-	}
-
-	.like-item-btn {
-		&__checkbox {
-			display: none;
-
-			&:checked + .toggle-icon {
-				color: $icon-fill-color;
-
-				&:before {
-					content: $icon-fill;
-				}
-
-				&:after {
-					content: $icon-fill;
-					animation: likeFly 0.6s ease-in;
-				}
-			}
-		}
-	}
-
-	.toggle-icon {
-		width: $icon-size;
-		height: $icon-size;
-		font-size: $icon-size;
-		position: relative;
-		color: gray;
-		cursor: pointer;
-		border: none;
-		background-color: transparent;
-
-		&:before,
-		&:after {
-			position: absolute;
-			top: 0;
-			left: 0;
-			transition: all 0.3s ease-out;
-			content: $icon-empty;
-			font-family: "Material Icons Round";
-		}
-
-		&:hover:before {
-			transform: scale(1.2);
-		}
-
-		&:active:before {
-			transition: none;
-			transform: scale(1);
-		}
-
-		&:after {
-			opacity: 0;
-		}
-	}
 
 	.loader-wrp {
 		width: 100%;
@@ -210,23 +85,5 @@
 		}
 	}
 
-	@keyframes heartbeat {
-		from {
-			opacity: 1;
-		}
-		to {
-			transform: scale(3);
-			opacity: 0;
-		}
-	}
 
-	@keyframes likeFly {
-		from {
-			opacity: 1;
-		}
-		to {
-			transform: scale(3) rotate(45deg) translateY(-90px);
-			opacity: 0;
-		}
-	}
 }

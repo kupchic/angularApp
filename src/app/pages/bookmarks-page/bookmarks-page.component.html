@@ -1,1 +1,34 @@
-<p>bookmarks-page works!</p>
+<div class="gallery-wrp">
+	<div class="gallery__titles">
+		<h2>Bookmarks</h2>
+	</div>
+	
+	<div class="gallery-grid-wrp">
+		<div *ngIf="getArr(bookmarks).length; else loader" class="gallery">
+			<div *ngFor="let card of getArr(bookmarks); let i = index" class="gallery-item">
+				<div class="gallery-item__img-wrp">
+					<img (click)="open(i)" [src]="card.thumbnailUrl" loading="lazy" alt="" class="gallery-item__img" />
+				</div>
+				<div class="gallery-item__title-wrp">
+					<p class="gallery-item__title">{{ card.title }}</p>
+					<label class="like-item-btn">
+						<input
+							[checked]="!!card"
+							(input)="openModalForAloneCard(card)"
+							class="like-item-btn__checkbox"
+							type="checkbox"
+						/>
+						<div class="toggle-icon" ></div>
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="gallery__pagination"></div>
+</div>
+<ng-template #loader>
+	<div class="loader-wrp">
+		нет
+	</div>
+</ng-template>

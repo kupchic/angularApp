@@ -1,9 +1,12 @@
 $header-aside-height-width: 5rem;
 $mainPad: $header-aside-height-width;
-$icon-fill:"\e87d" !default;
-$icon-empty:"\e87e" !default;
-$icon-fill-color:#A12C2C !default;
-$icon-size:1.5rem;
+$icon-size:1.5rem;$title-pagination-row-height: 3rem;
+$space: 1rem;
+$galleryHeight: calc(
+    100vh - 3 * #{$header-aside-height-width} - 2 * #{$title-pagination-row-height} - 2 * #{$space}
+);
+
+
 
 //colors
 
@@ -11,3 +14,9 @@ $mainBlack: #040404;
 $secondaryBlack: rgb(27, 31, 33);
 $mainBlue: #61dafb;
 $mainFontWhite: #f2f2f2;
+$icon-fill-color:#A12C2C;
+
+//
+
+$icon-fill:"\e87d" !default;
+$icon-empty:"\e87e" !default;
