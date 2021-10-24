@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from
 import {CardsService} from "@shared/services/cards-service.service";
 import {FlickerApi} from "@entities/flickerNameSpace.namespace";
 import {Lightbox} from "ngx-lightbox";
-import {fromEvent, Subscription} from "rxjs";
+import {BehaviorSubject, fromEvent, Subject, Subscription} from "rxjs";
 import {debounceTime} from "rxjs/operators";
 import {Bookmarks, BookmarksService} from "@shared/services/bookmarks.service";
 
@@ -19,6 +19,7 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 	) {}
 	perPage: number = 100;
 	page: number = 1;
+	pageSubject$ = new BehaviorSubject<number>(this.page);
 	pages: number = 0;
 	total: number = 0;
 	searchKeyword: string = "popular";
@@ -29,10 +30,15 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 	searchInput: ElementRef | undefined;
 	searchingSubscription!: Subscription;
 	bookmarksSubscription!: Subscription;
+	pageSubscription!: Subscription;
 
 	ngOnInit(): void {
 		this.bookmarksSubscription = this.bookmarksService.getBookmarks().subscribe((res) => {
 			this.bookmarks = res;
+		});
+		this.pageSubscription = this.pageSubject$.pipe(debounceTime(1000)).subscribe((res) => {
+			this.page = res;
+			this.updateInfo({keyWord: this.searchKeyword, page: this.page});
 		});
 
 		this.updateInfo();
@@ -81,7 +87,7 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 		this._lightbox.open(this._albums, index);
 	}
 	onTableChange(page: number): void {
-		this.updateInfo({keyWord: this.searchKeyword, page: page});
+		this.pageSubject$.next(page);
 	}
 
 	ngOnDestroy() {

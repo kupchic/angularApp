@@ -14,10 +14,11 @@ import {DeleteBookmarkModalComponent} from "@shared/components/delete-bookmark-m
 export class BookmarksPageComponent implements OnInit, OnDestroy {
 	constructor(private bookmarksService: BookmarksService, private _lightbox: Lightbox, public dialog: MatDialog) {}
 	bookmarks: Bookmarks = {};
-	bookmarksForDelete: FlickerApi.Card[] = [];
+	bookmarksForDelete: Bookmarks = {};
 	bookmarksSubscription!: Subscription;
 	modalCLoseSubscription!: Subscription;
 	private _albums: any[] = [];
+	allComplete: boolean = false;
 
 	ngOnInit(): void {
 		this.bookmarksSubscription = this.bookmarksService.getBookmarks().subscribe((res) => {
@@ -25,11 +26,7 @@ export class BookmarksPageComponent implements OnInit, OnDestroy {
 			this.updateLightbox();
 		});
 	}
-	deleteBookmark(id: string): void {
-		delete this.bookmarks[id];
-		this.bookmarksService.updateBookmarks(this.bookmarks);
-		this.updateLightbox();
-	}
+
 	updateLightbox() {
 		this._albums = [];
 		Object.values(this.bookmarks).forEach((el) => {
@@ -52,17 +49,22 @@ export class BookmarksPageComponent implements OnInit, OnDestroy {
 		this.bookmarksSubscription.unsubscribe();
 	}
 	openModalForAloneCard(card: FlickerApi.Card): void {
-		this.bookmarksForDelete.push(card);
+		this.bookmarksForDelete[card.id] = card;
 		this.openModalForMany(this.bookmarksForDelete);
 	}
-	openModalForMany(cards: FlickerApi.Card[]): void {
+	openModalForMany(cards: Bookmarks): void {
 		const dialogRef = this.dialog.open(DeleteBookmarkModalComponent, {
 			width: "250px",
 			data: cards,
 		});
-		this.modalCLoseSubscription = dialogRef.afterClosed().subscribe((result) => {
-			console.log(result);
+		this.modalCLoseSubscription = dialogRef.afterClosed().subscribe(() => {
+			this.bookmarksForDelete = {};
+			this.allComplete = false;
 			this.modalCLoseSubscription.unsubscribe();
 		});
+	}
+	setAll(complete: boolean): void {
+		this.allComplete = complete;
+		complete ? (this.bookmarksForDelete = this.bookmarks) : (this.bookmarksForDelete = {});
 	}
 }

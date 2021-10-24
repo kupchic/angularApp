@@ -2,9 +2,31 @@
 @import "mixins";
 
 :host {
-
-
-
+	$search-input-height: 2rem;
+	.search-input {
+		width: 100%;
+		max-width: 20rem;
+		height: $search-input-height;
+		line-height: $search-input-height;
+		outline: transparent;
+		border: none;
+		background-color: $secondaryBlack;
+		color: $mainFontWhite;
+		padding: $search-input-height * 0.25;
+		border-radius: $search-input-height * 0.25;
+		font-weight: 500;
+		&::placeholder{
+			transition-duration: 0.4s;
+		}
+		&:focus::placeholder {
+			text-indent: -100%;
+		}
+	}
+	.search-title{
+		overflow: hidden;
+		text-overflow:ellipsis;
+		white-space: nowrap;
+	}
 
 	.loader-wrp {
 		width: 100%;
@@ -84,6 +106,4 @@
 			}
 		}
 	}
-
-
 }

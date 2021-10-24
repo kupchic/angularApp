@@ -1,0 +1,15 @@
+:host{
+  .modal-inner{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+  .modal-btns-wrp{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+
+  }
+}

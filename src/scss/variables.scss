@@ -1,10 +1,14 @@
-$header-aside-height-width: 5rem;
+:root{
+  --header-aside-height-width: 5rem;
+}
+$header-aside-height-width: var(--header-aside-height-width);
 $mainPad: $header-aside-height-width;
 $icon-size:1.5rem;$title-pagination-row-height: 3rem;
 $space: 1rem;
 $galleryHeight: calc(
-    100vh - 3 * #{$header-aside-height-width} - 2 * #{$title-pagination-row-height} - 2 * #{$space}
+    100vh - 2.5 * #{$header-aside-height-width} - 2 * #{$title-pagination-row-height} - 2 * #{$space}
 );
+
 
 
 
@@ -20,3 +24,18 @@ $icon-fill-color:#A12C2C;
 
 $icon-fill:"\e87d" !default;
 $icon-empty:"\e87e" !default;
+
+//breakpoints
+
+$breakpointIpadPro: 1025px;
+$breakpointIpad: 768px;
+$breakpointRotatedPhone: 570px;
+$breakpointPhone: 415px;
+
+
+@media screen and (max-width: $breakpointPhone ) {
+  :root{
+    --header-aside-height-width: 4rem;
+  }
+
+}

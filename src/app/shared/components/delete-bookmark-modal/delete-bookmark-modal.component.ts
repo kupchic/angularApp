@@ -13,7 +13,7 @@ import {Subscription} from "rxjs";
 export class DeleteBookmarkModalComponent implements OnInit, OnDestroy {
 	constructor(
 		public dialogRef: MatDialogRef<DeleteBookmarkModalComponent>,
-		@Inject(MAT_DIALOG_DATA) public cardsForDelete: FlickerApi.Card[],
+		@Inject(MAT_DIALOG_DATA) public cardsForDelete: Bookmarks,
 		private bookmarksService: BookmarksService
 	) {}
 	bookmarks: Bookmarks = {};
@@ -30,12 +30,18 @@ export class DeleteBookmarkModalComponent implements OnInit, OnDestroy {
 	onClose() {
 		this.dialogRef.close();
 	}
+	getArr(bookmarks: Bookmarks): FlickerApi.Card[] {
+		return Object.values(bookmarks);
+	}
 	onSubmit() {
-		this.cardsForDelete.forEach((card) => {
-			delete this.bookmarks[card.id];
-		});
-
-		this.bookmarksService.updateBookmarks(this.bookmarks);
+		if (this.getArr(this.bookmarks).length === this.getArr(this.cardsForDelete).length) {
+			this.bookmarksService.updateBookmarks({});
+		} else {
+			Object.values(this.cardsForDelete).forEach((card) => {
+				if (this.bookmarks[card.id]) delete this.bookmarks[card.id];
+			});
+			this.bookmarksService.updateBookmarks(this.bookmarks);
+		}
 		this.dialogRef.close();
 	}
 }

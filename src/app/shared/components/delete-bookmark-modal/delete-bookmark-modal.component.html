@@ -1,2 +1,10 @@
-<button class="cancel mat-button" (click)="onClose()">Cancel</button>
-<button class="save mat-button" (click)="onSubmit()" mat-dialog-close>Apply</button>
+<div  class="modal-inner">
+	<h2 mat-dialog-title class="modal-title">
+		Delete {{getArr(this.cardsForDelete).length }} bookmark<span *ngIf="getArr(this.cardsForDelete).length > 1">s</span>
+	</h2>
+	
+	<div class="modal-btns-wrp">
+		<button mat-dialog-close class="mat-button" (click)="onClose()">Cancel</button>
+		<button color="primary" mat-dialog-close class="mat-button" (click)="onSubmit()" >Delete</button>
+	</div>
+</div>

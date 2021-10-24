@@ -4,12 +4,21 @@ import {BookmarksPageComponent} from "@pages/bookmarks-page/bookmarks-page.compo
 import {LightboxModule} from "ngx-lightbox";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {DeleteBookmarkModalModule} from "@shared/components/delete-bookmark-modal/delete-bookmark-modal.module";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 // import {NgxPaginationModule} from "ngx-pagination";
 
 @NgModule({
 	declarations: [BookmarksPageComponent],
-	imports: [CommonModule, LightboxModule, MatProgressBarModule, DeleteBookmarkModalModule],
+	imports: [
+		CommonModule,
+		LightboxModule,
+		MatProgressBarModule,
+		DeleteBookmarkModalModule,
+		MatTooltipModule,
+		MatCheckboxModule,
+	],
 	exports: [BookmarksPageComponent],
 })
 export class BookmarksPageModule {}

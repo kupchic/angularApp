@@ -1,22 +1,50 @@
 @import "variables";
+@import "mixins";
 :host {
-	.toggle-icon:hover {
-		&:after,
-		&:before {
-			content: "\e872";
-			color: $mainFontWhite;
+	.gallery {
+		&-item__inner {
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+		}
+		&.deleting {
+			.gallery-item__inner {
+				pointer-events: none;
+			}
+		}
+		.toggle-icon {
+			color: $icon-fill-color;
+
+			&:after,
+			&:before {
+				content: "";
+				animation: none;
+			}
+			&:hover {
+				&:after,
+				&:before {
+					content: "\e872";
+					color: $mainFontWhite;
+				}
+			}
 		}
 	}
-	::ng-deep {
-		//.mat-progress-bar-fill::after {
-		//	background-color: red;
-		//}
-		.mat-progress-bar-buffer {
-			background: red;
-		}
-		.mat-progress-bar,
-		.mat-progress-bar-fill {
-			height:4px !important;
+	mat-checkbox {
+		background: #f2f2f2;
+	}
+	.delete-panel {
+		display: flex;
+		justify-content: flex-end;
+		&__buttons {
+			margin-right: 1rem;
+			button {
+				@include flexCenteredX-Y();
+				font-size: 1.5rem;
+				line-height: 1.2;
+				background: none;
+				color: $mainFontWhite ;
+			}
 		}
 	}
 }

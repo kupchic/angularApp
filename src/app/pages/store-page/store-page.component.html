@@ -1,7 +1,7 @@
 <div class="gallery-wrp">
 	<div class="gallery__titles">
-		<h2>{{ searchKeyword | storeTitle }}</h2>
-		<input #searchInput placeholder="Search" type="text"/>
+		<h2  class="search-title">{{ searchKeyword | storeTitle }}</h2>
+		<input class="search-input" #searchInput placeholder="Search" type="text"/>
 	</div>
 	<div class="gallery-grid-wrp">
 		<div *ngIf="cards.length else loader " class="gallery">
@@ -25,9 +25,7 @@
 	
 	<div class="gallery__pagination">
 		<pagination-controls *ngIf="pages"
-				
-				previousLabel="Prev"
-				nextLabel="Next"
+				[responsive]="!0"
 				(pageChange)="onTableChange($event)">
 		</pagination-controls>
 	</div>

@@ -1,15 +1,17 @@
 @import "variables";
 
 :host {
-  flex-grow: 1;
+	flex-grow: 1;
 	display: grid;
 	grid-template-columns: $header-aside-height-width 1fr;
-  grid-template-rows: $header-aside-height-width 1fr ;
-  grid-template-areas: 'header header' 'aside main';
+	grid-template-rows: $header-aside-height-width 1fr;
+	grid-template-areas: "header header" "aside main";
+	overflow: hidden;
+	main {
+		padding: $header-aside-height-width;
+		padding-bottom: calc( #{$header-aside-height-width} * 0.5 ) ;
+		grid-area: main;
+	}
 
-  main{
-    padding: $header-aside-height-width;
-    grid-area: main;
-  }
 
 }
