@@ -8,9 +8,17 @@
 			flex-direction: column;
 			justify-content: space-between;
 		}
-		&.deleting {
-			.gallery-item__inner {
-				pointer-events: none;
+		&.md {
+			.gallery-item {
+				&.selected {
+					background-color: $secondaryBlack;
+				}
+				.checkbox-for-delete {
+					display: initial;
+				}
+				.gallery-item__inner {
+					pointer-events: none;
+				}
 			}
 		}
 		.toggle-icon {
@@ -43,8 +51,16 @@
 				font-size: 1.5rem;
 				line-height: 1.2;
 				background: none;
-				color: $mainFontWhite ;
+				color: $mainFontWhite;
 			}
 		}
+	}
+	.checkbox-for-delete {
+		pointer-events: none;
+		position: absolute;
+		top: 0.5rem;
+		left: 0.5rem;
+		z-index: 2;
+		display: none;
 	}
 }

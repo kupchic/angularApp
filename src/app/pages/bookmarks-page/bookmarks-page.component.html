@@ -1,35 +1,40 @@
 <div class="gallery-wrp">
 	<div class="gallery__titles">
-		<h2 >Bookmarks</h2>
+		<h2>Bookmarks</h2>
 		<div class="delete-panel">
 			<div class="delete-panel__buttons" *ngIf="getArr(bookmarksForDelete).length">
-				<button mat-icon-button (click)="openModalForMany(bookmarksForDelete)" class="delete-selected-items"  matTooltip="Delete selected" >
+				<button
+					mat-icon-button
+					(click)="openModalForMany(bookmarksForDelete)"
+					class="delete-selected-items"
+					matTooltip="Delete selected"
+				>
 					<span class="material-icons-round"> delete </span>
 				</button>
 			</div>
-			
+
 			<mat-checkbox
-					class="example-margin"
-					[checked]="allComplete"
-					[indeterminate]="
-					getArr(bookmarks).length !== getArr(bookmarksForDelete).length &&
-					allComplete &&
-					!!getArr(bookmarksForDelete).length
+				class="example-margin"
+				[checked]="getArr(bookmarks).length === getArr(bookmarksForDelete).length && multipleDeleting && !!getArr(bookmarksForDelete).length"
+				[indeterminate]= "
+					getArr(bookmarks).length !== getArr(bookmarksForDelete).length && multipleDeleting && !!getArr(bookmarksForDelete).length
 				"
-					(change)="setAll($event.checked)"
+				(change)="setAll($event.checked)"
 			>
 			</mat-checkbox>
 		</div>
 	</div>
 
 	<div class="gallery-grid-wrp">
-		<div [class.deleting]="bookmarksForDelete.length" *ngIf="getArr(bookmarks).length; else loader" class="gallery">
+		<div [class.md]="multipleDeleting" #bookmarksGallery *ngIf="getArr(bookmarks).length; else loader" class="gallery">
 			<div
 				[class.selected]="bookmarksForDelete[card.id]"
 				*ngFor="let card of getArr(bookmarks); let i = index"
 				class="gallery-item"
+				(click)="multipleDeletingSelect(card)"
 			>
 				<div class="gallery-item__inner">
+					<mat-checkbox [checked]="!!bookmarksForDelete[card.id]" class="checkbox-for-delete"></mat-checkbox>
 					<div class="gallery-item__img-wrp">
 						<img
 							(click)="open(i)"
