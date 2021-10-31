@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
-import {BehaviorSubject, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../environments/environment";
 import {map} from "rxjs/operators";
 import {FlickerApi} from "@entities/flickerNameSpace.namespace";
 
@@ -9,13 +8,14 @@ import {FlickerApi} from "@entities/flickerNameSpace.namespace";
 	providedIn: "root",
 })
 export class CardsService {
+	private apiKey = "9e38b7736e9ae50c7bef767293c03b8c";
 	private searchUrl =
 		"https://www.flickr.com/services/rest/?method=flickr.photos.search&format=json&nojsoncallback=1";
 	constructor(private http: HttpClient) {}
 
 	fetchCards(searchParams?: FlickerApi.SearchParams): Observable<FlickerApi.FetchResult> {
 		let searchKeyword = searchParams?.keyWord ? searchParams.keyWord : "popular";
-		let endpoint = `${this.searchUrl}&api_key=${environment.apiKey}&text=${searchKeyword}&=per_page=100&page=${
+		let endpoint = `${this.searchUrl}&api_key=${this.apiKey}&text=${searchKeyword}&=per_page=100&page=${
 			searchParams?.page ? searchParams.page : 1
 		}`;
 		return this.http.get<FlickerApi.ApiResponse>(endpoint).pipe(
