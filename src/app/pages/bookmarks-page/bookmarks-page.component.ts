@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {Bookmarks, BookmarksService} from "@shared/services/bookmarks.service";
 import {FlickerApi} from "@entities/flickerNameSpace.namespace";
-import {fromEvent, Subscription} from "rxjs";
+import {fromEvent, Subject, Subscription} from "rxjs";
 import {Lightbox} from "ngx-lightbox";
 import {MatDialog} from "@angular/material/dialog";
 import {DeleteBookmarkModalComponent} from "@shared/components/delete-bookmark-modal/delete-bookmark-modal.component";
@@ -15,22 +15,28 @@ import {of} from "rxjs";
 })
 export class BookmarksPageComponent implements OnInit, OnDestroy, AfterViewInit {
 	constructor(private bookmarksService: BookmarksService, private _lightbox: Lightbox, public dialog: MatDialog) {}
-	bookmarks: Bookmarks = {};
-	bookmarksForDelete: Bookmarks = {};
-	bookmarksSubscription!: Subscription;
-	modalCLoseSubscription!: Subscription;
-	longMouseDownSubscription!: Subscription;
+
+	public bookmarks: Bookmarks = {};
+	public bookmarksArr: FlickerApi.Card[] = [];
+	public bookmarksForDelete: Bookmarks = {};
+	public bookmarksForDeleteArr: FlickerApi.Card[] = [];
+	public allComplete: boolean = false;
+	public multipleDeleting: boolean = false;
 	private _albums: any[] = [];
-	allComplete: boolean = false;
+	private unsubscribe$ = new Subject<void>();
+	private modalCLoseSubscription!: Subscription;
 	@ViewChild("bookmarksGallery", {static: false})
-	gallery: ElementRef | undefined;
-	multipleDeleting: boolean = false;
+	private gallery: ElementRef | undefined;
 
 	ngOnInit(): void {
-		this.bookmarksSubscription = this.bookmarksService.getBookmarks().subscribe((res) => {
-			this.bookmarks = res;
-			this.updateLightbox();
-		});
+		this.bookmarksService
+			.getBookmarks()
+			.pipe(takeUntil(this.unsubscribe$))
+			.subscribe((res) => {
+				this.bookmarks = res;
+				this.bookmarksArr = this.getArr(res);
+				this.updateLightbox();
+			});
 	}
 
 	updateLightbox() {
@@ -43,9 +49,11 @@ export class BookmarksPageComponent implements OnInit, OnDestroy, AfterViewInit 
 		});
 		this._albums.reverse();
 	}
+
 	open(index: number): void {
 		this._lightbox.open(this._albums, index);
 	}
+
 	getArr(bookmarks: Bookmarks): FlickerApi.Card[] {
 		return Object.values(bookmarks).reverse();
 	}
@@ -54,38 +62,38 @@ export class BookmarksPageComponent implements OnInit, OnDestroy, AfterViewInit 
 		if (this.gallery?.nativeElement) {
 			const mouseDown$ = fromEvent(this.gallery.nativeElement, "mousedown");
 			const mouseUp$ = fromEvent(this.gallery.nativeElement, "mouseup");
-			this.longMouseDownSubscription = mouseDown$
+			mouseDown$
 				.pipe(
 					mergeMap((e: any) => {
 						return of(e).pipe(delay(1200), takeUntil(mouseUp$));
-					})
+					}),
+					takeUntil(this.unsubscribe$)
 				)
 				.subscribe((e: any) => {
 					if (e.target.closest(".gallery-item")) {
-						e.preventDefault();
 						this.multipleDeleting = true;
 					}
 				});
 		}
 	}
+
 	multipleDeletingSelect(card: FlickerApi.Card): void {
-		// const empty = () => {};
-		// this.multipleDeleting
-		// 	? this.bookmarksForDelete[card.id]
-		// 		? delete this.bookmarksForDelete[card.id]
-		// 		: (this.bookmarksForDelete[card.id] = card)
-		// 	: empty();
 		if (this.multipleDeleting) {
 			if (this.bookmarksForDelete[card.id]) {
-				console.log(2);
 				delete this.bookmarksForDelete[card.id];
+				this.bookmarksForDeleteArr.splice(
+					this.bookmarksForDeleteArr.findIndex((c) => c === card),
+					1
+				);
 			} else {
-				console.log(1);
 				this.bookmarksForDelete[card.id] = card;
+				this.bookmarksForDeleteArr.push(card);
+			}
+			if (!this.bookmarksForDeleteArr.length) {
+				this.multipleDeleting = false;
+				this.allComplete = false;
 			}
 		}
-
-		console.log(this.bookmarksForDelete);
 	}
 
 	openModalForAloneCard(card: FlickerApi.Card): void {
@@ -93,30 +101,44 @@ export class BookmarksPageComponent implements OnInit, OnDestroy, AfterViewInit 
 		const data: Bookmarks = {};
 		data[id] = card;
 		const dialogRef = this.dialog.open(DeleteBookmarkModalComponent, {
-			width: "250px",
+			width: "18rem",
+			maxWidth: "90vw",
 			data: data,
 		});
 	}
+
 	openModalForMany(cards: Bookmarks): void {
 		const dialogRef = this.dialog.open(DeleteBookmarkModalComponent, {
-			width: "250px",
+			width: "18rem",
+			maxWidth: "90vw",
 			data: cards,
 		});
-		this.modalCLoseSubscription = dialogRef.afterClosed().subscribe(() => {
-			this.bookmarksForDelete = {};
-			this.allComplete = false;
-			this.multipleDeleting = false;
+		this.modalCLoseSubscription = dialogRef.afterClosed().subscribe((res) => {
+			if (res) {
+				this.bookmarksForDelete = {};
+				this.bookmarksForDeleteArr = [];
+				this.allComplete = false;
+				this.multipleDeleting = false;
+			}
 			this.modalCLoseSubscription.unsubscribe();
 		});
 	}
+
 	setAll(complete: boolean): void {
 		this.allComplete = complete;
 		this.multipleDeleting = complete;
-		complete ? (this.bookmarksForDelete = this.bookmarks) : (this.bookmarksForDelete = {});
+		if (complete) {
+			this.bookmarksForDelete = {...this.bookmarks};
+			this.bookmarksForDeleteArr = [...this.bookmarksArr];
+		} else {
+			this.bookmarksForDelete = {};
+			this.bookmarksForDeleteArr = [];
+		}
 	}
+
 	ngOnDestroy() {
 		this.bookmarksService.updateBookmarks(this.bookmarks);
-		this.bookmarksSubscription.unsubscribe();
-		this.longMouseDownSubscription.unsubscribe();
+		this.unsubscribe$.next();
+		this.unsubscribe$.complete();
 	}
 }

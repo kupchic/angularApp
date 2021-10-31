@@ -2,7 +2,7 @@
 	<div class="gallery__titles">
 		<h2>Bookmarks</h2>
 		<div class="delete-panel">
-			<div class="delete-panel__buttons" *ngIf="getArr(bookmarksForDelete).length">
+			<div class="delete-panel__buttons" *ngIf="bookmarksForDeleteArr.length">
 				<button
 					mat-icon-button
 					(click)="openModalForMany(bookmarksForDelete)"
@@ -15,9 +15,15 @@
 
 			<mat-checkbox
 				class="example-margin"
-				[checked]="getArr(bookmarks).length === getArr(bookmarksForDelete).length && multipleDeleting && !!getArr(bookmarksForDelete).length"
-				[indeterminate]= "
-					getArr(bookmarks).length !== getArr(bookmarksForDelete).length && multipleDeleting && !!getArr(bookmarksForDelete).length
+				[checked]="
+					bookmarksArr.length === bookmarksForDeleteArr.length &&
+					multipleDeleting &&
+					!!bookmarksForDeleteArr.length
+				"
+				[indeterminate]="
+					bookmarksArr.length !== bookmarksForDeleteArr.length &&
+					multipleDeleting &&
+					!!bookmarksForDeleteArr.length
 				"
 				(change)="setAll($event.checked)"
 			>
@@ -26,10 +32,10 @@
 	</div>
 
 	<div class="gallery-grid-wrp">
-		<div [class.md]="multipleDeleting" #bookmarksGallery *ngIf="getArr(bookmarks).length; else loader" class="gallery">
+		<div [class.md]="multipleDeleting" #bookmarksGallery *ngIf="bookmarksArr.length; else loader" class="gallery">
 			<div
 				[class.selected]="bookmarksForDelete[card.id]"
-				*ngFor="let card of getArr(bookmarks); let i = index"
+				*ngFor="let card of bookmarksArr; let i = index"
 				class="gallery-item"
 				(click)="multipleDeletingSelect(card)"
 			>
@@ -40,12 +46,12 @@
 							(click)="open(i)"
 							[src]="card.thumbnailUrl"
 							loading="lazy"
-							alt=""
+							alt=" "
 							class="gallery-item__img"
 						/>
 					</div>
 					<div class="gallery-item__title-wrp">
-						<p class="gallery-item__title">{{ card.title }}</p>
+						<p title="{{ card.title }}" class="gallery-item__title">{{ card.title }}</p>
 						<label class="like-item-btn">
 							<input
 								[checked]="!!card"

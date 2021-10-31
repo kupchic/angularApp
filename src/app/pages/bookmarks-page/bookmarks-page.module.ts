@@ -7,8 +7,6 @@ import {DeleteBookmarkModalModule} from "@shared/components/delete-bookmark-moda
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 
-// import {NgxPaginationModule} from "ngx-pagination";
-
 @NgModule({
 	declarations: [BookmarksPageComponent],
 	imports: [

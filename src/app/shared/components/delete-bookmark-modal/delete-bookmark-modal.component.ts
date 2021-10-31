@@ -28,7 +28,7 @@ export class DeleteBookmarkModalComponent implements OnInit, OnDestroy {
 		this.bookmarksSubscription.unsubscribe();
 	}
 	onClose() {
-		this.dialogRef.close();
+		this.dialogRef.close(false);
 	}
 	getArr(bookmarks: Bookmarks): FlickerApi.Card[] {
 		return Object.values(bookmarks);
@@ -40,8 +40,9 @@ export class DeleteBookmarkModalComponent implements OnInit, OnDestroy {
 			Object.values(this.cardsForDelete).forEach((card) => {
 				if (this.bookmarks[card.id]) delete this.bookmarks[card.id];
 			});
+
 			this.bookmarksService.updateBookmarks(this.bookmarks);
 		}
-		this.dialogRef.close();
+		this.dialogRef.close(true);
 	}
 }

@@ -9,23 +9,15 @@ import {FlickerApi} from "@entities/flickerNameSpace.namespace";
 	providedIn: "root",
 })
 export class CardsService {
-	private cardResult$ = new BehaviorSubject<FlickerApi.FetchResult>({} as FlickerApi.FetchResult);
 	private searchUrl =
 		"https://www.flickr.com/services/rest/?method=flickr.photos.search&format=json&nojsoncallback=1";
 	constructor(private http: HttpClient) {}
 
-	updateCards(cards: FlickerApi.FetchResult): void {
-		this.cardResult$.next(cards);
-	}
-	getCards(): Observable<FlickerApi.FetchResult> {
-		return this.cardResult$.asObservable();
-	}
 	fetchCards(searchParams?: FlickerApi.SearchParams): Observable<FlickerApi.FetchResult> {
 		let searchKeyword = searchParams?.keyWord ? searchParams.keyWord : "popular";
 		let endpoint = `${this.searchUrl}&api_key=${environment.apiKey}&text=${searchKeyword}&=per_page=100&page=${
 			searchParams?.page ? searchParams.page : 1
 		}`;
-		console.log(endpoint);
 		return this.http.get<FlickerApi.ApiResponse>(endpoint).pipe(
 			map((res: FlickerApi.ApiResponse) => {
 				const cardsArr: FlickerApi.Card[] = [];
