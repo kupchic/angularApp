@@ -258,9 +258,9 @@ body {
 	}
 }
 @media screen and (max-width: $breakpointRotatedPhone ) {
-	//:root{
-	//	font-size: 12px;
-	//}
+	:root{
+		font-size: 12px;
+	}
 	.gallery{
 		grid-template-columns: repeat(1, 1fr);
 	}

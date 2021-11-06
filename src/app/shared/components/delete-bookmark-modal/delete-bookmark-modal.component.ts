@@ -3,7 +3,8 @@ import {Component, OnInit} from "@angular/core";
 import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {FlickerApi} from "@entities/flickerNameSpace.namespace";
 import {Bookmarks, BookmarksService} from "@shared/services/bookmarks.service";
-import {Subscription} from "rxjs";
+import {Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
 	selector: "app-delete-bookmark-modal",
@@ -16,24 +17,28 @@ export class DeleteBookmarkModalComponent implements OnInit, OnDestroy {
 		@Inject(MAT_DIALOG_DATA) public cardsForDelete: Bookmarks,
 		private bookmarksService: BookmarksService
 	) {}
-	bookmarks: Bookmarks = {};
-	bookmarksSubscription!: Subscription;
+	public bookmarks: Bookmarks = {};
+	private unsubscribe$ = new Subject<void>();
 	ngOnInit(): void {
-		this.bookmarksSubscription = this.bookmarksService.getBookmarks().subscribe((res) => {
-			this.bookmarks = res;
-		});
+		this.bookmarksService
+			.getBookmarks()
+			.pipe(takeUntil(this.unsubscribe$))
+			.subscribe((res) => {
+				this.bookmarks = res;
+			});
 	}
 
 	ngOnDestroy() {
-		this.bookmarksSubscription.unsubscribe();
+		this.unsubscribe$.next();
+		this.unsubscribe$.complete();
 	}
-	onClose() {
+	public onClose() {
 		this.dialogRef.close(false);
 	}
-	getArr(bookmarks: Bookmarks): FlickerApi.Card[] {
+	public getArr(bookmarks: Bookmarks): FlickerApi.Card[] {
 		return Object.values(bookmarks);
 	}
-	onSubmit() {
+	public onSubmit() {
 		if (this.getArr(this.bookmarks).length === this.getArr(this.cardsForDelete).length) {
 			this.bookmarksService.updateBookmarks({});
 		} else {

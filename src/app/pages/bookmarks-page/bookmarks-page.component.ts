@@ -39,7 +39,7 @@ export class BookmarksPageComponent implements OnInit, OnDestroy, AfterViewInit 
 			});
 	}
 
-	updateLightbox() {
+	private updateLightbox() {
 		this._albums = [];
 		Object.values(this.bookmarks).forEach((el) => {
 			this._albums.push({
@@ -50,11 +50,11 @@ export class BookmarksPageComponent implements OnInit, OnDestroy, AfterViewInit 
 		this._albums.reverse();
 	}
 
-	open(index: number): void {
+	public open(index: number): void {
 		this._lightbox.open(this._albums, index);
 	}
 
-	getArr(bookmarks: Bookmarks): FlickerApi.Card[] {
+	public getArr(bookmarks: Bookmarks): FlickerApi.Card[] {
 		return Object.values(bookmarks).reverse();
 	}
 
@@ -77,7 +77,7 @@ export class BookmarksPageComponent implements OnInit, OnDestroy, AfterViewInit 
 		}
 	}
 
-	multipleDeletingSelect(card: FlickerApi.Card): void {
+	public multipleDeletingSelect(card: FlickerApi.Card): void {
 		if (this.multipleDeleting) {
 			if (this.bookmarksForDelete[card.id]) {
 				delete this.bookmarksForDelete[card.id];
@@ -96,20 +96,20 @@ export class BookmarksPageComponent implements OnInit, OnDestroy, AfterViewInit 
 		}
 	}
 
-	openModalForAloneCard(card: FlickerApi.Card): void {
+	public openModalForAloneCard(card: FlickerApi.Card): void {
 		const id = card.id;
 		const data: Bookmarks = {};
 		data[id] = card;
 		const dialogRef = this.dialog.open(DeleteBookmarkModalComponent, {
-			width: "18rem",
+			width: "20rem",
 			maxWidth: "90vw",
 			data: data,
 		});
 	}
 
-	openModalForMany(cards: Bookmarks): void {
+	public openModalForMany(cards: Bookmarks): void {
 		const dialogRef = this.dialog.open(DeleteBookmarkModalComponent, {
-			width: "18rem",
+			width: "20rem",
 			maxWidth: "90vw",
 			data: cards,
 		});
@@ -124,7 +124,7 @@ export class BookmarksPageComponent implements OnInit, OnDestroy, AfterViewInit 
 		});
 	}
 
-	setAll(complete: boolean): void {
+	public setAll(complete: boolean): void {
 		this.allComplete = complete;
 		this.multipleDeleting = complete;
 		if (complete) {

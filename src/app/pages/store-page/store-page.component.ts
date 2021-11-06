@@ -30,7 +30,8 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 	@ViewChild("searchInput", {static: false})
 	private searchInput: ElementRef | undefined;
 	private unsubscribe$ = new Subject<void>();
-	private test: any;
+	private fetchResults$: any = new Subject<FlickerApi.FetchResult>().pipe(pairwise());
+	private lastTwoResults: FlickerApi.FetchResult[] = [];
 
 	ngOnInit(): void {
 		this.bookmarksService
@@ -41,7 +42,21 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 			});
 		this.pageSubject$.pipe(debounceTime(1000), takeUntil(this.unsubscribe$)).subscribe((res) => {
 			this.page = res;
-			this.updateInfo({keyWord: this.searchKeyword, page: this.page});
+			if (
+				this.lastTwoResults.length === 2 &&
+				this.lastTwoResults[0].page === this.page &&
+				this.lastTwoResults[0].searchKeyword === this.searchKeyword
+			) {
+				this.cards = this.lastTwoResults[0].cards;
+				this.updateLightbox();
+				this.fetchResults$.next(this.lastTwoResults[0]);
+			} else {
+				this.updateInfo({keyWord: this.searchKeyword, page: this.page});
+			}
+		});
+		this.fetchResults$.pipe(takeUntil(this.unsubscribe$)).subscribe((res: FlickerApi.FetchResult[]) => {
+			this.lastTwoResults = res;
+			console.log(this.lastTwoResults);
 		});
 	}
 
@@ -54,7 +69,7 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 	}
 
-	cardLike(card: FlickerApi.Card): void {
+	public cardLike(card: FlickerApi.Card): void {
 		if (!this.bookmarks[card.id]) {
 			this.bookmarksService.addToBookmarks(card);
 		} else {
@@ -62,25 +77,13 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 		}
 	}
 
-	updateInfo(searchParams?: FlickerApi.SearchParams): void {
+	private updateInfo(searchParams?: FlickerApi.SearchParams): void {
 		this.cards = [];
-		this.cardService
-			.fetchCards(searchParams)
-			.pipe(pairwise(), takeUntil(this.unsubscribe$))
-			.subscribe(
-				(res) => {
-					this.test = res;
-				},
-				() => {},
-				() => {
-					console.log(this.test);
-				}
-			);
-
 		this.cardService
 			.fetchCards(searchParams)
 			.toPromise()
 			.then((res) => {
+				this.fetchResults$.next(res);
 				this.cards = res.cards;
 				this.searchKeyword = res.searchKeyword;
 				this.total = res.total;
@@ -89,21 +92,25 @@ export class StorePageComponent implements OnInit, AfterViewInit, OnDestroy {
 				this.perPage = res.perpage;
 			})
 			.then(() => {
-				this._albums = [];
-				this.cards.forEach((el) => {
-					this._albums.push({
-						src: el.originalImageUrl,
-						caption: el.title,
-					});
-				});
+				this.updateLightbox();
 			});
 	}
 
-	open(index: number): void {
+	public open(index: number): void {
 		this._lightbox.open(this._albums, index);
 	}
 
-	onTableChange(page: number): void {
+	private updateLightbox(): void {
+		this._albums = [];
+		this.cards.forEach((el) => {
+			this._albums.push({
+				src: el.originalImageUrl,
+				caption: el.title,
+			});
+		});
+	}
+
+	public onTableChange(page: number): void {
 		this.pageSubject$.next(page);
 	}
 
